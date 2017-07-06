@@ -56,6 +56,7 @@ class SearchableListView(ListView):
                 continue
             for field in value["fields"]:
                 formfield = get_formfield(model, field)
+                formfield.required = False  # all search fields should be optional
                 formfield.widget.attrs.update({'class': self.css_class})
                 form.fields.update({
                     field : formfield
@@ -132,7 +133,7 @@ class SearchableListView(ListView):
             dico[str(model)]["model"] = model
             dico[str(model)]["fields"] = []
 
-            for key, value in mini_dict.items():
+            for key, value in sorted(mini_dict.items(), key=lambda x: self.searchable_fields.index(x[0])):
                 if isinstance(value, bool):
                     continue
                 if value == EMPTY_DICT:
